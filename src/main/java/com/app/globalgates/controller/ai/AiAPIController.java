@@ -20,7 +20,7 @@ import java.util.Map;
 @Slf4j
 @RequestMapping("/ai/**")
 public class AiAPIController {
-    private final WebClient webClient = WebClient.create("http://localhost:8000");
+    private final WebClient webClient = WebClient.create("https://persons-pos-describes-tions.trycloudflare.com");
 
     // 게시글 신뢰도 측정
     @PostMapping("post/trust")
