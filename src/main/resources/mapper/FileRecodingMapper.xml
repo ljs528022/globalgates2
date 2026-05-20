@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.globalgates.mapper.FileRecodingMapper">
+    <insert id="insert">
+        insert into tbl_video_recoding (id, meeting_id, recoding_time)
+        values (#{id}, #{meetingId}, #{recodingTime})
+    </insert>
+
+    <select id="selectByMeetingAndMemberId">
+        select id, original_name, file_name, file_path, file_size, content_type, created_datetime, recoding_time, meeting_id, requester_id, acceptor_id
+        from vw_file_recoding
+        where (requester_id = #{memberId} or acceptor_id = #{memberId})
+        and (requester_id = #{opponentId} or acceptor_id = #{opponentId})
+    </select>
+
+    <select id="selectByMeetingId">
+        select
+            id, original_name, file_name, file_path,
+            file_size, content_type, created_datetime,
+            meeting_id, recoding_time
+        from vw_file_recoding
+        where meeting_id = #{meetingId}
+    </select>
+
+</mapper>
