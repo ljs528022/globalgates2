@@ -111,6 +111,7 @@
                         </button>
                     </div>
                     <div class="composerActions">
+                        <button type="button" class="tweet-modal__ai">신뢰도 측정</button>
                         <div class="composerGauge">
                             <span class="composerGaugeText">500</span>
                         </div>
@@ -265,6 +266,48 @@
             </div>
         </div>
     </div><!-- /.tweet-modal -->
+
+    <!-- ai 신뢰도 측정 결과 모달 -->
+    <div class="trust-modal-overlay off" id="trustModalOverlay">
+        <div class="trust-modal">
+
+            <!-- 헤더 -->
+            <div class="trust-modal__header">
+                <h2 class="trust-modal__title">신뢰도 측정 결과</h2>
+                <div style="width:34px"></div>
+            </div>
+
+            <!-- 점수 히어로 -->
+            <div class="trust-score-hero">
+                <div class="trust-ring-wrap">
+                    <svg width="80" height="80" viewBox="0 0 80 80">
+                        <circle cx="40" cy="40" r="32" fill="none"
+                                stroke="#eff3f4" stroke-width="7"/>
+                        <circle id="trustRingArc" cx="40" cy="40" r="32" fill="none"
+                                stroke-width="7" stroke-linecap="round"
+                                stroke-dasharray="201" stroke-dashoffset="201"
+                                transform="rotate(-90 40 40)"/>
+                    </svg>
+                    <div class="trust-ring-center">
+                        <span class="trust-ring-num" id="trustRingNum">0</span>
+                        <span class="trust-ring-denom">/ 100</span>
+                    </div>
+                </div>
+                <div class="trust-hero-info">
+                    <div class="trust-grade-pill" id="trustGradePill"></div>
+                    <p class="trust-hero-desc" id="trustHeroDesc"></p>
+                </div>
+            </div>
+
+            <!-- 개선 제안 -->
+            <div class="trust-divider"></div>
+            <div class="trust-suggest-head">
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
+                개선 제안
+            </div>
+            <div class="trust-suggest-list" id="trustSuggestList"></div>
+        </div><!-- /.trust-modal -->
+    </div><!-- /.trust-modal-overlay -->
 </div><!-- /.tweet-modal-overlay[data-compose-modal] -->
 </body>
 </html>

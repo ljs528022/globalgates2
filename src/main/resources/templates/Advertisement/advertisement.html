@@ -5,12 +5,12 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>global gates 광고 센터</title>
-    <link rel="stylesheet" href="/css/common/mobile-nav.css" th:href="@{/css/common/mobile-nav.css}"/>
-    <link rel="stylesheet" href="/css/advertisement/advertisement.css"/>
-    <script src="/js/common/mobile-nav.js" th:src="@{/js/common/mobile-nav.js}" defer></script>
-    <script src="/js/advertisement/event.js"></script>
-    <script src="/js/advertisement/service.js"></script>
-    <script src="/js/advertisement/layout.js"></script>
+    <link rel="stylesheet" href="/css/common/mobile-nav.css" th:href="@{css/common/mobile-nav.css}"/>
+    <link rel="stylesheet" href="/css/Advertisement/Advertisement.css"/>
+    <script src="/js/common/mobile-nav.js" th:src="@{js/common/mobile-nav.js}" defer></script>
+    <script src="/js/Advertisement/event.js"></script>
+    <script src="/js/Advertisement/service.js"></script>
+    <script src="/js/Advertisement/layout.js"></script>
     <script src="https://js.bootpay.co.kr/bootpay-5.0.2.min.js"></script>
 </head>
 <body>
@@ -155,6 +155,8 @@
                 <div class="MarketplaceAdHeaderActions MarketplaceAdButtonGroup MarketplaceAdButtonGroup--uniform">
                     <button class="MarketplaceAdSecondaryButton" data-header-action="guide" type="button">운영 가이드
                     </button>
+                    <button class="MarketplaceAdAIButton" data-header-action="AI" type="button">추천 예산 확인
+                    </button>
                     <button class="MarketplaceAdPrimaryButton" data-header-action="payment" type="button">결제 및 접수
                     </button>
                 </div>
@@ -207,12 +209,6 @@
                                             </div>
                                             <span class="MarketplaceAdFieldHint" data-summary-field="impressionHelper"></span>
                                         </label>
-                                        <label class="MarketplaceAdField">
-                                            <span>광고 시작 시각</span>
-                                            <input class="MarketplaceAdInput"
-                                                   data-form-field="startedAt" type="datetime-local" value=""/>
-                                            <span class="MarketplaceAdFieldHint">예산 + 시작 시각을 입력하면 예상 노출 시간이 자동 계산돼요.</span>
-                                        </label>
                                         <div class="MarketplaceAdField">
                                             <span>첨부파일</span>
                                             <div class="MarketplaceAdFileRow MarketplaceAdButtonGroup MarketplaceAdButtonGroup--uniform">
@@ -235,6 +231,26 @@
                                     </div>
                                     <p class="MarketplaceAdFormNote">커뮤니티 글처럼 간단히 작성되며, 결제 완료 후 운영팀 검수를 거쳐 노출됩니다.</p>
                                 </div>
+
+                                <div class="MarketplaceAdAIResult" data-ai-result hidden>
+                                    <p class="MarketplaceAdPanelEyebrow">추천 예산 분석</p>
+                                    <div class="MarketplaceAdSummaryRow">
+                                        <span>추천 예산</span>
+                                        <strong data-ai-field="predicted_budget">-</strong>
+                                    </div>
+                                    <div class="MarketplaceAdSummaryRow">
+                                        <span>예상 노출 횟수</span>
+                                        <strong data-ai-field="predicted_impression">-</strong>
+                                    </div>
+                                    <div class="MarketplaceAdSummaryRow">
+                                        <span>최소 예산</span>
+                                        <strong data-ai-field="predicted_min">-</strong>
+                                    </div>
+                                    <div class="MarketplaceAdSummaryRow">
+                                        <span>최대 예산</span>
+                                        <strong data-ai-field="predicted_max">-</strong>
+                                    </div>
+                                </div>
                             </section>
                         </div>
 
@@ -248,43 +264,6 @@
                                     </div>
                                 </div>
                                 <div class="MarketplaceAdPanelBody">
-                                    <div class="MarketplaceAdEstimateCard">
-                                        <div class="MarketplaceAdEstimateHeader">
-                                            <span class="MarketplaceAdEstimateIcon" aria-hidden="true">
-                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <path d="M15 4V2"/>
-                                                    <path d="M15 16v-2"/>
-                                                    <path d="M8 9h2"/>
-                                                    <path d="M20 9h2"/>
-                                                    <path d="M17.8 11.8 19 13"/>
-                                                    <path d="M15 9h.01"/>
-                                                    <path d="M17.8 6.2 19 5"/>
-                                                    <path d="m3 21 9-9"/>
-                                                    <path d="M12.2 6.2 11 5"/>
-                                                </svg>
-                                            </span>
-                                            <span class="MarketplaceAdEstimateTitle">결제 후 예상 노출 효과</span>
-                                            <span class="MarketplaceAdEstimateBadge">
-                                                <span class="MarketplaceAdEstimateBadgeSpark" aria-hidden="true">✦</span>AI
-                                            </span>
-                                        </div>
-                                        <div class="MarketplaceAdEstimateGrid">
-                                            <div class="MarketplaceAdEstimateRow">
-                                                <div class="MarketplaceAdEstimateItem">
-                                                    <div class="MarketplaceAdEstimateLabel">예상 노출</div>
-                                                    <div class="MarketplaceAdEstimateValue" data-summary-field="impressionLabel">약 1,500회</div>
-                                                </div>
-                                                <div class="MarketplaceAdEstimateItem">
-                                                    <div class="MarketplaceAdEstimateLabel">예상 노출 시간</div>
-                                                    <div class="MarketplaceAdEstimateValue" data-summary-field="estimatedDurationLabel">—</div>
-                                                </div>
-                                            </div>
-                                            <div class="MarketplaceAdEstimateItem">
-                                                <div class="MarketplaceAdEstimateLabel">예상 종료</div>
-                                                <div class="MarketplaceAdEstimateValue" data-summary-field="estimatedEndLabel">—</div>
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div class="MarketplaceAdSummaryRow">
                                         <span>광고 상품</span>
                                         <strong>커뮤니티 피드 광고</strong>
@@ -292,6 +271,10 @@
                                     <div class="MarketplaceAdSummaryRow">
                                         <span>결제 금액</span>
                                         <strong data-summary-field="amountLabel">₩300,000</strong>
+                                    </div>
+                                    <div class="MarketplaceAdSummaryRow">
+                                        <span>예상 노출</span>
+                                        <strong data-summary-field="impressionLabel">약 1,500회</strong>
                                     </div>
                                     <div class="MarketplaceAdSummaryRow">
                                         <span>URL</span>
@@ -598,8 +581,6 @@
                     </div>
                     <div class="MarketplaceAdInfoRow"><span>예상 노출</span><strong data-payment-field="impressionLabel">약
                         1,500회</strong></div>
-                    <div class="MarketplaceAdInfoRow"><span>예상 노출 시간</span><strong data-payment-field="estimatedDurationLabel">—</strong></div>
-                    <div class="MarketplaceAdInfoRow"><span>예상 종료</span><strong data-payment-field="estimatedEndLabel">—</strong></div>
                 </div>
                 <div class="MarketplaceAdPaymentStatus" data-payment-status>결제를 완료하면 신청 광고 목록에 바로 접수됩니다.</div>
             </div>
