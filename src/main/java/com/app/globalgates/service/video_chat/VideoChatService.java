@@ -5,6 +5,7 @@ import com.app.globalgates.aop.annotation.LogStatusWithReturn;
 import com.app.globalgates.common.enumeration.FileContentType;
 import com.app.globalgates.domain.FileRecodingVO;
 import com.app.globalgates.domain.video_chat.VideoChatVO;
+import com.app.globalgates.domain.video_chat.VideoSessionListVO;
 import com.app.globalgates.dto.FileDTO;
 import com.app.globalgates.dto.FileRecodingDTO;
 import com.app.globalgates.dto.MeetingDTO;
@@ -76,12 +77,6 @@ public class VideoChatService {
         fileRecodingDAO.save(fileRecodingDTO.toFileRecodingVO());
     }
 
-    // 회의 id와 유저 id로 모든 녹화파일 조회
-    @LogStatusWithReturn
-    public List<FileRecodingDTO> getRecordsByMeetingAndMemberId(Long opponentId, Long memberId) {
-        return fileRecodingDAO.findByMeetingAndMemberId(opponentId, memberId);
-    }
-
     // 회의 id로 해당 회의의 녹음 파일 조회
     @LogStatusWithReturn
     public FileRecodingDTO getRecodingFile(Long meetingId) {
@@ -89,9 +84,15 @@ public class VideoChatService {
     }
 
     @Transactional
-    @LogStatus
-    public void endSession(Long conversationId) {
-        videoChatDAO.updateSessionEnd(conversationId);
+    @LogStatusWithReturn
+    public int endSession(Long conversationId, Long memberId) {
+        return videoChatDAO.updateSessionEnd(conversationId, memberId);
+    }
+
+    // 본인(caller_id) 의 화상회의 목록 + 요약 조회 — video_ai 위젯에서 사용
+    @LogStatusWithReturn
+    public List<VideoSessionListVO> getMySessions(Long callerId) {
+        return videoChatDAO.findSessionsByCallerId(callerId);
     }
 
     // toDTO
