@@ -8,6 +8,7 @@ import com.app.globalgates.service.MemberService;
 import com.app.globalgates.service.S3Service;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import java.time.Duration;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class FriendsController {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
@@ -59,8 +61,11 @@ public class FriendsController {
             model.addAttribute("isOwner", isOwner);
             model.addAttribute("followersCount", followersCount);
             model.addAttribute("followingsCount", followingsCount);
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            // 익셉션 묵살 금지 — 친구 페이지 진입 실패의 진짜 원인을 docker logs 로 추적할 수 있어야 한다.
+            log.error("friends page resolve failed", e);
+        }
 
-        return "Friends/Friends";
+        return "friends/friends";
     }
 }

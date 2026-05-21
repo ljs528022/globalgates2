@@ -5,6 +5,7 @@ import com.app.globalgates.auth.AuthenticationHandler;
 import com.app.globalgates.auth.AuthorizationHandler;
 import com.app.globalgates.auth.OAuth2SuccessHandler;
 import com.app.globalgates.common.enumeration.MemberRole;
+import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,12 +46,18 @@ public class SecurityConfig {
 //                JWT 기반 인증은 무상태(stateless) 인증 방식
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // SSE/reactive(Flux) 응답은 AsyncContext.complete() 후 ASYNC 디스패치로 필터체인을 재진입한다.
+                        // 그 스레드엔 SecurityContext(ThreadLocal) 가 전파되지 않아 익명으로 보고 403 → 응답이 이미
+                        // committed 라 에러 페이지도 못 그린다. 최초 REQUEST 단계에서 이미 인가했으므로 ASYNC/ERROR
+                        // 디스패치는 통과시킨다.
+                        .dispatcherTypeMatchers(DispatcherType.ASYNC, DispatcherType.ERROR).permitAll()
                         .requestMatchers(
 //                                필터 체인(인증)을 제외할 경로
                                 "/api/auth/**",
                                 "/api/member/**",
                                 "/api/messages/**",
                                 "/api/mail/**",
+                                "/api/v1/chat/profanity-check",
                                 "/member/join",
                                 "/member/login",
                                 "/error",
@@ -58,7 +65,6 @@ public class SecurityConfig {
                                 "/js/**",
                                 "/images/**",
                                 "/static/**",
-                                "/ai/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/image/**",

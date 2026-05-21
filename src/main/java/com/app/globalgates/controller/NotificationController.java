@@ -7,6 +7,7 @@ import com.app.globalgates.service.MemberService;
 import com.app.globalgates.service.S3Service;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import java.time.Duration;
 @Controller
 @RequestMapping("/notification")
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationController {
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
@@ -44,9 +46,10 @@ public class NotificationController {
             model.addAttribute("member", member);
         } catch (Exception e) {
             memberId = 0L;
+            log.error("notification page member resolve failed", e);
         }
 
         model.addAttribute("memberId", memberId);
-        return "Notification/Notification";
+        return "notification/notification";
     }
 }

@@ -2,7 +2,6 @@ package com.app.globalgates.controller.video_chat;
 
 import com.app.globalgates.auth.CustomUserDetails;
 import com.app.globalgates.domain.video_chat.VideoChatVO;
-import com.app.globalgates.dto.FileRecodingDTO;
 import com.app.globalgates.dto.MeetingDTO;
 import com.app.globalgates.dto.chat.ChatRoomDTO;
 import com.app.globalgates.dto.video_chat.VideoChatDTO;
@@ -12,13 +11,13 @@ import com.app.globalgates.service.chat.ChatRoomService;
 import com.app.globalgates.service.video_chat.VideoChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -106,17 +105,6 @@ public class VideoChatAPIController implements VideoChatAPIControllerDocs {
         }
     }
 
-    // 화상통화 상대방과의 녹화 목록 조회
-    @GetMapping("list")
-    public ResponseEntity<?> getRecords(
-            @RequestParam Long opponentId,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Long memberId = userDetails.getId();
-        List<FileRecodingDTO> records = videoChatService.getRecordsByMeetingAndMemberId(opponentId, memberId);
-
-        return ResponseEntity.ok(records);
-    }
-
     // 로그인한 본인 확인
     @GetMapping("me")
     public ResponseEntity<?> getMyId(
@@ -151,10 +139,16 @@ public class VideoChatAPIController implements VideoChatAPIControllerDocs {
         return ResponseEntity.ok().build();
     }
 
-    // 화상통화 종료
+    // 화상통화 종료 — caller/receiver 본인만 종료 가능 (BOLA 차단)
     @PostMapping("session/end")
-    public ResponseEntity<Void> endSession(@RequestParam Long conversationId) {
-        videoChatService.endSession(conversationId);
+    public ResponseEntity<Void> endSession(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestParam Long conversationId) {
+        int updated = videoChatService.endSession(conversationId, userDetails.getId());
+        if (updated == 0) {
+            // conversationId 가 없거나 본인이 caller/receiver 가 아님 — 어느 쪽이든 403
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         return ResponseEntity.ok().build();
     }
 }

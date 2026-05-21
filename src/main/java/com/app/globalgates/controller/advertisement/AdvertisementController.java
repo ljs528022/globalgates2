@@ -12,6 +12,6 @@ public class AdvertisementController {
 
     @GetMapping("/ad")
     public String goToAdPage() {
-        return "Advertisement/Advertisement";
+        return "advertisement/advertisement";
     }
 }

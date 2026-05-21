@@ -56,14 +56,6 @@ public class MainAPIController implements MainAPIControllerDocs {
         return ads;
     }
 
-//    광고 노출수 차감
-    @PostMapping("/ads/{id}/impression")
-    @LogStatus
-    public void minusImpressionCount(@PathVariable Long id) {
-        log.info("광고 노출수 차감됨 광고Id: {}", id);
-        advertisementService.minusImpressionCount(id);
-    }
-
 //    게시글 목록 조회
     @GetMapping("/posts/list/{page}")
     @LogStatusWithReturn
@@ -396,16 +388,16 @@ public class MainAPIController implements MainAPIControllerDocs {
 //    멘션 검색 (handle로 검색, 양방향 차단 제외, 최대 10개)
     @GetMapping("/mentions/search")
     @LogStatusWithReturn
-    public List<com.app.globalgates.dto.MentionDTO> searchMentionMembers(@RequestParam String keyword, @RequestParam Long memberId) {
+    public List<MentionDTO> searchMentionMembers(@RequestParam String keyword, @RequestParam Long memberId) {
         log.info("멘션검색 들어옴1 keyword: {}, memberId: {}", keyword, memberId);
-        List<com.app.globalgates.dto.MentionDTO> result = mentionDAO.searchForMention(keyword, memberId);
+        List<MentionDTO> result = mentionDAO.searchForMention(keyword, memberId);
         log.info("멘션검색 들어옴2 결과수: {}", result.size());
         // 프로필 이미지 presigned URL 변환
         result.forEach(m -> {
             if (m.getProfileFileName() != null) {
                 try {
-                    m.setProfileFileName(s3Service.getPresignedUrl(m.getProfileFileName(), java.time.Duration.ofMinutes(10)));
-                } catch (java.io.IOException e) {
+                    m.setProfileFileName(s3Service.getPresignedUrl(m.getProfileFileName(), Duration.ofMinutes(10)));
+                } catch (IOException e) {
                     m.setProfileFileName(null);
                 }
             }

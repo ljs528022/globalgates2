@@ -37,7 +37,11 @@ public class ExploreController {
                 }
             }
             model.addAttribute("member", member);
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            // 익셉션을 통째로 삼키면 템플릿에서 ${member.id} 가 NPE 를 던져 500 이 나도 원인 추적이 불가능하다.
+            // 최소한 로그라도 남기고, 아래 explore 템플릿은 member null 을 허용하도록 표현식을 null-safe 로 두었다.
+            log.error("explore page member resolve failed", e);
+        }
         return "explore/explore";
     }
 
@@ -56,7 +60,11 @@ public class ExploreController {
                 }
             }
             model.addAttribute("member", member);
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            // 익셉션을 통째로 삼키면 템플릿에서 ${member.id} 가 NPE 를 던져 500 이 나도 원인 추적이 불가능하다.
+            // 최소한 로그라도 남기고, 아래 explore 템플릿은 member null 을 허용하도록 표현식을 null-safe 로 두었다.
+            log.error("explore page member resolve failed", e);
+        }
         return "explore/explore-result";
     }
 }

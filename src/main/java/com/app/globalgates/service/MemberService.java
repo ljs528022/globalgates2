@@ -60,7 +60,8 @@ public class MemberService {
         businessMemberDAO.save(businessMemberDTO.toBusinessMemberVO());
 
         // 회원가입 정보에서 가져온 카테고리 이름으로 카테고리 조회
-        CategoryDTO categoryDTO = categoryDAO.findByCategoryName(memberDTO.getCategoryName()).orElseThrow(null);
+        CategoryDTO categoryDTO = categoryDAO.findByCategoryName(memberDTO.getCategoryName())
+                .orElseThrow(() -> new IllegalArgumentException("카테고리를 찾을 수 없습니다."));
 
         // 사업자 관심사 저장
         CategoryMemberDTO categoryMemberDTO = new CategoryMemberDTO();

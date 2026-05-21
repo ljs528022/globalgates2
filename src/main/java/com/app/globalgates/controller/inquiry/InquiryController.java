@@ -36,7 +36,7 @@ public class InquiryController {
             return "redirect:/main/main";
         }
         model.addAttribute("member", getLoginMemberWithProfile(request));
-        return "Inquiry/inquiry-chart";
+        return "inquiry/inquiry-chart";
     }
 
     @GetMapping("/member-list")
@@ -46,7 +46,7 @@ public class InquiryController {
             return "redirect:/main/main";
         }
         model.addAttribute("member", getLoginMemberWithProfile(request));
-        return "Inquiry/Inquiry_list";
+        return "inquiry/inquiry_list";
     }
 
     private boolean isExpert(CustomUserDetails userDetails) {

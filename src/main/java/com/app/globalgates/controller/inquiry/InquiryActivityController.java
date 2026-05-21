@@ -36,7 +36,7 @@ public class InquiryActivityController {
             return "redirect:/main/main";
         }
         model.addAttribute("member", getLoginMemberWithProfile(request));
-        return "Inquiry/inquiry_active_list";
+        return "inquiry/inquiry_active_list";
     }
 
     // JWT에서 로그인 멤버를 꺼내고 프로필 이미지 presigned URL까지 세팅 (사이드바 사용자 정보용)

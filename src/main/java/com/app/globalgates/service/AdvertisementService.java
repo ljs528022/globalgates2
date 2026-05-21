@@ -139,10 +139,11 @@ public class AdvertisementService {
     }
 
     // 피드용 광고목록 (페이지 단위)
-    @Cacheable(value = "ad:list", key = "'main:page:' + #page + ':count:' + #count")
+    @Cacheable(value = "ad:list", key = "'main'")
     @LogStatusWithReturn
     public List<AdvertisementDTO> getAdsInMain(int page, int count) {
         int offset = (page - 1) * count;
+
         return advertisementDAO.findAllForMain(count, offset).stream()
                 .map(adDTO -> {
                     List<FileAdvertisementDTO> images = fileAdvertisementDAO.findByAdId(adDTO.getId());
@@ -157,13 +158,6 @@ public class AdvertisementService {
                     adDTO.setCreatedDatetime(DateUtils.toRelativeTime(adDTO.getCreatedDatetime()));
                     return adDTO;
                 }).collect(Collectors.toList());
-    }
-
-    // 광고 받으면 노출수 차감
-    @CacheEvict(value = "ad:list", allEntries = true)
-    @LogStatus
-    public void minusImpressionCount(Long adId) {
-        advertisementDAO.minusImpressionCount(adId);
     }
 
     // 오늘자 경로 생성

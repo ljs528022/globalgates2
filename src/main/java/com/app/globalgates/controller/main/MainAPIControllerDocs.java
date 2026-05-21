@@ -215,7 +215,7 @@ public interface MainAPIControllerDocs {
             parameters = {@Parameter(name = "keyword", description = "검색 키워드"),
                             @Parameter(name = "memberId", description = "로그인한 회원의 id")}
     )
-    public List<com.app.globalgates.dto.MentionDTO> searchMentionMembers(@RequestParam String keyword, @RequestParam Long memberId);
+    public List<MentionDTO> searchMentionMembers(@RequestParam String keyword, @RequestParam Long memberId);
 
     @Operation(
             summary = "임시저장",

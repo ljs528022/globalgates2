@@ -1,11 +1,11 @@
 package com.app.globalgates.service;
 
 import com.app.globalgates.aop.annotation.LogStatus;
-import com.app.globalgates.aop.annotation.LogStatusWithReturn;
 import com.app.globalgates.common.enumeration.FileContentType;
 import com.app.globalgates.common.pagination.Criteria;
 import com.app.globalgates.domain.CommunityVO;
 import com.app.globalgates.dto.*;
+import com.app.globalgates.mapper.CommunityFeaturesMapper;
 import com.app.globalgates.repository.*;
 import com.app.globalgates.util.DateUtils;
 import lombok.RequiredArgsConstructor;
@@ -15,13 +15,17 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,12 +42,17 @@ public class CommunityService {
     private final PostFileDAO postFileDAO;
     private final PostHashtagDAO postHashtagDAO;
     private final ReplyProductRelDAO replyProductRelDAO;
+    private final CommunityFeaturesMapper communityFeaturesMapper;
+
+    // reload 호출 합치기(coalesce) — 짧은 시간에 여러 번 트리거되어도 "진행 중 1건 + 대기 1건"
+    // 으로 압축. 진행 중일 때 들어온 모든 추가 트리거는 pending 으로 모이고, 진행이 끝난 직후
+    // 한 번만 더 호출돼 가장 최신 DB 상태를 반영한다.
+    private final AtomicBoolean reloadInFlight = new AtomicBoolean(false);
+    private final AtomicBoolean reloadPending = new AtomicBoolean(false);
 
     // ──────────────────────────────────────
     // 커뮤니티 CRUD
     // ──────────────────────────────────────
-
-
     @CacheEvict(value = "community:list", allEntries = true)
     @LogStatus
     public void createCommunity(CommunityDTO dto, MultipartFile coverImage) throws IOException {
@@ -61,6 +70,9 @@ public class CommunityService {
             creatorMember.setMemberId(dto.getCreatorId());
             creatorMember.setMemberRole("member");
             communityMemberDAO.save(creatorMember);
+
+            // AI 추천 보강 데이터 upsert — 신규 커뮤니티가 추천 데이터셋에 포함되도록
+            communityFeaturesMapper.upsertTags(dto.getId(), dto.getTags());
         } catch (Exception e) {
             // DB 롤백은 @Transactional이 처리. S3 파일만 수동 삭제 (보상 패턴)
             if (uploadedS3Key != null) {
@@ -68,6 +80,9 @@ public class CommunityService {
             }
             throw e;
         }
+
+        // 트랜잭션 커밋 후 FastAPI 데이터셋 hot reload — 다음 추천 요청부터 신규 커뮤니티 반영
+        scheduleRecommendReloadAfterCommit();
     }
 
     @Caching(evict = {
@@ -103,6 +118,15 @@ public class CommunityService {
             });
             saveCoverImage(communityId, coverImage);
         }
+
+        // 태그가 함께 전달된 경우에만 features upsert + reload — 커버만 교체하는 케이스는 추천에 영향 없음
+        if (vo.getTags() != null) {
+            communityFeaturesMapper.upsertTags(communityId, vo.getTags());
+            scheduleRecommendReloadAfterCommit();
+        } else if (vo.getCommunityName() != null || vo.getDescription() != null) {
+            // 이름/설명이 변경된 경우에도 추천 텍스트가 바뀌므로 reload 만 트리거
+            scheduleRecommendReloadAfterCommit();
+        }
     }
 
     @Caching(evict = {
@@ -121,6 +145,9 @@ public class CommunityService {
         }
 
         communityDAO.softDelete(communityId);
+
+        // softDelete → community_status='inactive' 이므로 다음 reload 때 데이터셋에서 자동 제외
+        scheduleRecommendReloadAfterCommit();
     }
 
     @Cacheable(value = "community", key = "'detail:' + #communityId + ':member:' + #memberId")
@@ -486,6 +513,32 @@ public class CommunityService {
     // ──────────────────────────────────────
     // 내부 유틸
     // ──────────────────────────────────────
+
+    // 트랜잭션 커밋 후 FastAPI /reload 를 fire-and-forget 으로 호출.
+    // 실패해도 사용자 흐름(생성/수정/삭제 완료) 은 절대 막지 않는다 — 다음 reload 호출 또는
+    // 부팅 시점 재로드 때 자동으로 데이터셋이 갱신된다.
+    private void scheduleRecommendReloadAfterCommit() {
+        if (!TransactionSynchronizationManager.isSynchronizationActive()) {
+            // 트랜잭션 밖에서 호출된 경우 — 즉시 비동기 실행
+            triggerRecommendReload();
+            return;
+        }
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                triggerRecommendReload();
+            }
+        });
+    }
+
+    private void triggerRecommendReload() {
+        // 이미 진행 중인 reload 가 있으면 "끝나면 한 번 더 돌려달라" 는 표시만 남기고 즉시 종료.
+        // 동시 트리거를 모두 1건의 후속 호출로 합쳐 reload 폭주를 막는다.
+        if (!reloadInFlight.compareAndSet(false, true)) {
+            reloadPending.set(true);
+            return;
+        }
+    }
 
     private void saveCoverImage(Long communityId, MultipartFile coverImage) throws IOException {
         saveCoverImageAndReturnKey(communityId, coverImage);

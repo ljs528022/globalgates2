@@ -29,7 +29,4 @@ public interface AdvertisementMapper {
 
     // 광고 삭제
     public void delete(Long id);
-
-    // 광고 노출수 차감                                                                                                 e
-    public void minusImpressionCount(Long id);
 }

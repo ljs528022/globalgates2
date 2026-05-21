@@ -17,5 +17,6 @@ public class CommunityVO extends Period {
     private String description;
     private String communityStatus;
     private Long categoryId;
+    private String tags;
 
 }

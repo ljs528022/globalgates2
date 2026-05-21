@@ -19,11 +19,6 @@ public class FileRecodingDAO {
         fileRecodingMapper.insert(fileRecodingVO);
     };
 
-    // 회의 id와 유저 id로 모든 녹화파일 조회
-    public List<FileRecodingDTO> findByMeetingAndMemberId(Long opponentId, Long memberId) {
-        return fileRecodingMapper.selectByMeetingAndMemberId(opponentId, memberId);
-    }
-
     // 회의 id로 녹음파일 조회
     public FileRecodingDTO findByMeetingId(Long meetingId) {
         return fileRecodingMapper.selectByMeetingId(meetingId);

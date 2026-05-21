@@ -25,6 +25,6 @@ public class SubscribeController {
         log.info("깐트롤러 들어옴3");
         log.info("깐트롤러 들어옴4 현재 얘구독통째로 = {}", mySubscription);
         model.addAttribute("mySubscription", mySubscription);
-        return "Subscribe/Subscribe";
+        return "subscribe/subscribe";
     }
 }
