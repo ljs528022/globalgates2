@@ -1484,11 +1484,14 @@
 
             btn.addEventListener('click', openPanel);
 
-            // 패널 밖(스플래시 영역)을 클릭하면 시작하기 화면으로 복귀
+            // 패널 밖(스플래시 영역)을 클릭하면 시작하기 화면으로 복귀.
+            // 단, 회원가입/로그인 등 가입 플로우 모달이 열려 있을 때는 모달 내부 클릭을
+            // "패널 밖 클릭"으로 오인해 splash로 돌아가지 않도록 예외 처리한다.
             document.addEventListener('click', (e) => {
                 if (splash.dataset.leaving !== '1') return;
                 if (panel && panel.contains(e.target)) return;
                 if (btn.contains(e.target)) return;
+                if (e.target.closest && e.target.closest('.join-flow-modal')) return;
                 closePanel();
             });
         })();

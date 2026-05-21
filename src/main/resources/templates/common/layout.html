@@ -10,11 +10,17 @@
     <script src="/js/common/post-modal-service.js" defer></script>
     <script src="/js/common/post-modal.js" defer></script>
     <script src="/js/common/header.js" defer></script>
+    <script src="/js/video_ai/service.js" defer></script>
+    <script src="/js/video_ai/layout.js" defer></script>
     <script src="/js/video_ai/event.js" defer></script>
 </head>
-<body>
+<body th:attr="data-google-maps-api-key=${googleMapsApiKey},
+               data-kakao-maps-js-key=${kakaoMapsJsKey},
+               data-livekit-server-url=${livekitServerUrl},
+               data-ad-regression-api-url=${adRegressionApiUrl},
+               data-profanity-api-base-url=${profanityApiBaseUrl}">
 <main class="Page-Layout" id="mainPage">
-    <header th:replace="/common/header::header"></header>
+    <header th:replace="common/header::header"></header>
 
     <th:block layout:fragment="content"></th:block>
 
@@ -22,7 +28,7 @@
         <div th:replace="~{video_ai/video_ai :: videoAi}"></div>
     </th:block>
 
-    <footer th:replace="/common/footer::footer"></footer>
+    <footer th:replace="common/footer::footer"></footer>
 </main>
     <th:block layout:fragment="modals"></th:block>
     <div th:replace="~{common/compose-modal :: composeModal}"></div>

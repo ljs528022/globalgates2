@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/common/layout-left-one}">
+      layout:decorate="~{common/layout-left-one}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1131,6 +1131,24 @@
     <!-- 모바일 nav + 더보기 아코디언 (공용 fragment) -->
     <div th:replace="~{common/mobile-nav :: mobileNav('more')}"></div>
     <div th:replace="~{common/mobile-nav :: mobileMoreSheet}"></div>
+
+    <!-- 비속어 안내 모달 -->
+    <div class="Small-Modal Profanity off" id="profanityModal">
+        <div class="Small-Header">
+            <h2 id="profanityModalTitle">비속어가 감지되었습니다</h2>
+        </div>
+        <p class="Small-Message" id="profanityModalMessage">메시지에 비속어로 보이는 표현이 포함되어 있습니다. 수정 후 다시 보내주세요.</p>
+        <div class="Small-Buttons">
+            <button class="Small-Button Ban" id="profanitySendAnyway">그래도 보내기</button>
+            <button class="Small-Button Cancel" id="profanityEdit">수정하기</button>
+        </div>
+        <button class="Close-Button" id="profanityClose">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" data-icon="icon-close" viewBox="0 0 24 24"
+                 width="1em" height="1em" display="flex" role="img" class="text-primary h-4 w-4 text-gray-900">
+                <path d="M10.59 12L4.54 5.96l1.42-1.42L12 10.59l6.04-6.05 1.42 1.42L13.41 12l6.05 6.04-1.42 1.42L12 13.41l-6.04 6.05-1.42-1.42L10.59 12z"></path>
+            </svg>
+        </button>
+    </div>
 
     <!-- 화상통화 수신 모달 -->
     <div class="Small-Modal VideoCall-Request off" id="videoCallModal">

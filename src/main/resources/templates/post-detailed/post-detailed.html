@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/common/layout}">
+      layout:decorate="~{common/layout}">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -19,7 +19,8 @@
         const postIsFollowed = [[${post.followed}]];
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
-    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=5edccf3b451ef7d32d5c833781ba22dc&libraries=services"></script>
+    <script type="text/javascript"
+            th:src="@{https://dapi.kakao.com/v2/maps/sdk.js(appkey=${kakaoMapsJsKey},libraries='services')}"></script>
 <!--    <script src="/js/post-detailed/post-detailed-copy/layout.js"></script>-->
 <!--    <script src="/js/post-detailed/post-detailed-copy/service.js"></script>-->
 <!--    <script src="/js/post-detailed/post-detailed-copy/event.js"></script>-->

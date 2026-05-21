@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/common/layout-left-one}">
+      layout:decorate="~{common/layout-left-one}">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -64,8 +64,8 @@
     <script src="/js/setting/layout.js"></script>
     <script src="/js/setting/event.js"></script>
 </head>
-<body>
-<gmpx-api-loader key="AIzaSyBvskCpZg5-38p-M_xpfRiXYXYeqAF_ZD4" solution-channel="GMP_QB_addressselection_v4_cABC">
+<body th:attr="data-google-maps-api-key=${googleMapsApiKey}">
+<gmpx-api-loader th:attr="key=${googleMapsApiKey}" solution-channel="GMP_QB_addressselection_v4_cABC">
 </gmpx-api-loader>
 <main class="Page-Layout" id="mainPage">
     <th:block layout:fragment="content">
@@ -321,7 +321,7 @@
                                             <img
                                                     th:case="'NAVER'"
                                                     class="account-connect-card__logo"
-                                                    src="/images/NAVER_login_KR/NAVER_login_Light_KR_green_icon_H48.png"
+                                                    src="/images/naver_login_kr/naver_login_light_kr_green_icon_h48.png"
                                                     alt="네이버 로고"
                                                     loading="lazy"
                                             />

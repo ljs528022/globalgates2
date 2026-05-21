@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/common/layout}">
+      layout:decorate="~{common/layout}">
 <head>
     <link rel="icon" type="image/png" href="/images/logo/logo.png">
     <meta charset="UTF-8" />
@@ -9,18 +9,21 @@
     <title>커뮤니티</title>
     <link rel="stylesheet" href="/css/common/mobile-nav.css" />
     <link rel="stylesheet" href="/css/community/community-detailed.css" />
+    <link rel="stylesheet" href="/css/community/community-recommend.css" />
     <script src="/js/common/mobile-nav.js" defer></script>
     <script src="/js/community/service.js"></script>
     <script src="/js/community/community-detailed-service.js"></script>
     <script src="/js/community/community-detailed-layout.js"></script>
+    <script src="/js/community/community-recommend.js"></script>
     <script src="/js/community/community-detailed-event.js"></script>
 </head>
 <body>
 
 <th:block layout:fragment="content">
-<div class="app-container">
 
-  <!-- 메인 콘텐츠 -->
+  <!-- 메인 콘텐츠. community.html 의 .timelinePanel 과 동일하게 .Page-Layout flex 의 직접 자식.
+       이전엔 .app-container wrapper 안에 감싸져 있었는데, wrapper 가 flex 컨테이너 안에서 width 가 명시되지 않아
+       내부의 .main-content {width:100%} 가 600px 까지 늘어나지 못하고 좁게 렌더링됐다. -->
   <main class="main-content communityDetailPage" th:data-community-id="${communityId}" th:data-community-name="${communityName}" th:data-member-id="${memberId}" th:data-profile-image="${profileImageUrl}">
 
     <!-- 검색 오버레이 -->
@@ -93,7 +96,6 @@
     </div>
 
   </main>
-</div>
 
 <!-- 오버레이 (헤더 드롭다운용) -->
 <div id="overlay" class="overlay hidden" onclick="closeAllDropdowns()"></div>

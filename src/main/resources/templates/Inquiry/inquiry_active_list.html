@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="/css/common/mobile-nav.css" th:href="@{/css/common/mobile-nav.css}"/>
         <link rel="stylesheet" href="/css/main/main.css"/>
         <link rel="stylesheet" href="/css/common/post-modal.css"/>
-        <link rel="stylesheet" href="/css/Inquiry/inquiry_active_list.css"/>
+        <link rel="stylesheet" href="/css/inquiry/inquiry_active_list.css"/>
         <script src="/js/common/mobile-nav.js" th:src="@{/js/common/mobile-nav.js}" defer></script>
         <script src="/js/common/profile-link.js" defer></script>
         <script src="https://cdn.jsdelivr.net/npm/@joeattardi/emoji-button@3.0.3/dist/index.min.js"></script>
@@ -21,7 +21,7 @@
     </head>
     <body>
     <div class="Page-Layout">
-    <header th:replace="/common/header::header"></header>
+    <header th:replace="common/header::header"></header>
     <!-- inquiry_active_list 화면 전체 래퍼 -->
     <main class="activity-page">
         <div class="activity-layout">
@@ -1895,7 +1895,7 @@
             </div>
         </div>
     </main>
-    <footer th:replace="/common/footer::footer"></footer>
+    <footer th:replace="common/footer::footer"></footer>
     </div>
     <!-- ===== 동적 레이어 마운트 지점 (#layers) =====
               openShareDropdown()가 공유 드롭다운을 동적으로 추가한다.
